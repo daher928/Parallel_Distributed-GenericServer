@@ -18,13 +18,13 @@ start_link(ServerName) ->
 	gen_server:start_link({local, ServerName}, ?MODULE, [], []).
 
 stop(ServerName) ->
-	gen_server:call({local, ServerName}, stop).
+	gen_server:stop(ServerName).
 
 num_running_functions(ServerName) ->
-	gen_server:call({local, ServerName}, numOfRunning).
+	gen_server:call(ServerName, numOfRunning).
 
 calcFunction(ServerName, Pid, Function, MsgRef) ->
-	gen_server:call({local, ServerName}, {calculate, Pid, Function, MsgRef}).
+	gen_server:cast(ServerName, {calculate, Pid, Function, MsgRef}).
 
 
 %% ====================================================================
