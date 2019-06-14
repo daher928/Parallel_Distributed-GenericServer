@@ -1,6 +1,5 @@
 %% @author Daher
-%% @doc @todo Add description to function_server.
-
+%% @doc Parallel_Distributed-GenericServer: Gen_server based parallel distributed server for function execution.
 
 -module(function_server).
 -behaviour(gen_server).
@@ -52,6 +51,7 @@ init([]) ->
 handle_call(Request, _From, State) ->
     case Request of
 		numOfRunning -> {reply, State, State};
+%% 		execution_done -> {reply, State-1, State-1};
 		_ -> invalid_call
     end.
 
@@ -70,8 +70,10 @@ handle_call(Request, _From, State) ->
 handle_cast({calculate, Pid, Function, MsgRef}, State) ->
 	ServerName = self(),
 	spawn(fun()->
-			Pid ! {MsgRef, Function()},
-			gen_server:call(ServerName, numOfRunning)
+			FunRes = Function(),
+			Pid ! {MsgRef, FunRes},
+		  	ServerName ! execution_done
+%% 			gen_server:call(ServerName, execution_done)
 		  end
 	),
 
@@ -92,7 +94,10 @@ handle_cast({calculate, Pid, Function, MsgRef}, State) ->
 	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
 handle_info(Info, State) ->
-    {noreply, State}.
+	case Info of
+		execution_done -> {noreply, State-1}
+	end.
+    
 
 
 %% terminate/2
