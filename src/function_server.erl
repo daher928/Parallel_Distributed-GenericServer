@@ -24,7 +24,8 @@ num_running_functions(ServerName) ->
 	gen_server:call(ServerName, numOfRunning).
 
 calcFunction(ServerName, Pid, Function, MsgRef) ->
-	gen_server:cast(ServerName, {calculate, Pid, Function, MsgRef}).
+	gen_server:cast(ServerName, {calculate, Pid, Function, MsgRef}),
+	ok.
 
 
 %% ====================================================================
@@ -48,10 +49,10 @@ init([]) ->
 
 
 %% handle_call/3
-handle_call(Request, From, State) ->
+handle_call(Request, _From, State) ->
     case Request of
-				numOfRunning -> {reply, State, State};
-				{calculate, Pid, Function, MsgRef} -> {reply, State+1, State+1}
+		numOfRunning -> {reply, State, State};
+		_ -> invalid_call
     end.
 
 
@@ -66,8 +67,17 @@ handle_call(Request, From, State) ->
 	NewState :: term(),
 	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
-handle_cast(Msg, State) ->
-    {noreply, State}.
+handle_cast({calculate, Pid, Function, MsgRef}, State) ->
+	ServerName = self(),
+	spawn(fun()->
+			Pid ! {MsgRef, Function()},
+			gen_server:call(ServerName, numOfRunning)
+		  end
+	),
+
+    {noreply, State+1}.
+
+
 
 
 %% handle_info/2
