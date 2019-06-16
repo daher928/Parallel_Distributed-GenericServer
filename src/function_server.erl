@@ -92,7 +92,8 @@ handle_cast({calculate, Pid, Function, MsgRef}, State) ->
 %% ====================================================================
 handle_info(Info, State) ->
 	case Info of
-		execution_done -> {noreply, State-1}
+		execution_done -> {noreply, State-1};
+		exit_error -> exit(error)
 	end.
     
 
