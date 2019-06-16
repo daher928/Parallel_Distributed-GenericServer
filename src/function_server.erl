@@ -79,9 +79,6 @@ handle_cast({calculate, Pid, Function, MsgRef}, State) ->
 
     {noreply, State+1}.
 
-
-
-
 %% handle_info/2
 %% ====================================================================
 %% @doc <a href="http://www.erlang.org/doc/man/gen_server.html#Module:handle_info-2">gen_server:handle_info/2</a>
