@@ -9,15 +9,15 @@
 %% API functions
 %% ====================================================================
 -export([start_link/1]).
--export([stop/1]).
+%% -export([stop/1]).
 -export([num_running_functions/1]).
 -export([calcFunction/4]).
 
 start_link(ServerName) ->
 	gen_server:start_link({local, ServerName}, ?MODULE, [], []).
 
-stop(ServerName) ->
-	gen_server:stop(ServerName).
+%% stop(ServerName) ->
+%% 	gen_server:stop(ServerName).
 
 num_running_functions(ServerName) ->
 	gen_server:call(ServerName, numOfRunning).
@@ -25,7 +25,6 @@ num_running_functions(ServerName) ->
 calcFunction(ServerName, Pid, Function, MsgRef) ->
 	gen_server:cast(ServerName, {calculate, Pid, Function, MsgRef}),
 	ok.
-
 
 %% ====================================================================
 %% Behavioural functions
@@ -96,8 +95,6 @@ handle_info(Info, State) ->
 		exit_error -> exit(error)
 	end.
     
-
-
 %% terminate/2
 %% ====================================================================
 %% @doc <a href="http://www.erlang.org/doc/man/gen_server.html#Module:terminate-2">gen_server:terminate/2</a>
@@ -107,7 +104,7 @@ handle_info(Info, State) ->
 			| {shutdown, term()}
 			| term().
 %% ====================================================================
-terminate(Reason, State) ->
+terminate(_Reason, _State) ->
     ok.
 
 
@@ -119,7 +116,7 @@ terminate(Reason, State) ->
 	OldVsn :: Vsn | {down, Vsn},
 	Vsn :: term().
 %% ====================================================================
-code_change(OldVsn, State, Extra) ->
+code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
