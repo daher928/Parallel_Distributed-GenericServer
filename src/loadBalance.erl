@@ -1,7 +1,6 @@
 %% @author Daher
 %% @doc @todo Add description to loadBalance.
 
-
 -module(loadBalance).
 
 %% ====================================================================
@@ -12,8 +11,14 @@
 -export([numberOfRunningFunctions/1]).
 -export([calcFun/3]).
 
+%% ====================================================================
+%% Internal functions
+%% ====================================================================
 -export([min_load_server/0]).
 
+%% ====================================================================
+%% API functions Implementations
+%% ====================================================================
 startServers() -> 
 	servers_supervisor:start_link().
 
@@ -37,7 +42,7 @@ calcFun(PID, F, MsgRef) ->
 	ok.
 
 %% ====================================================================
-%% Internal functions
+%% Internal functions implementation
 %% ====================================================================
 
 %% returns the server with least number of functions running

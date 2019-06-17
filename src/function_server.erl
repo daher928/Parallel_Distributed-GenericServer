@@ -2,22 +2,20 @@
 %% @doc Parallel_Distributed-GenericServer: Gen_server based parallel distributed server for function execution.
 
 -module(function_server).
+
 -behaviour(gen_server).
+
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% ====================================================================
 %% API functions
 %% ====================================================================
 -export([start_link/1]).
-%% -export([stop/1]).
 -export([num_running_functions/1]).
 -export([calcFunction/4]).
 
 start_link(ServerName) ->
 	gen_server:start_link({local, ServerName}, ?MODULE, [], []).
-
-%% stop(ServerName) ->
-%% 	gen_server:stop(ServerName).
 
 num_running_functions(ServerName) ->
 	gen_server:call(ServerName, numOfRunning).
@@ -50,10 +48,8 @@ init([]) ->
 handle_call(Request, _From, State) ->
     case Request of
 		numOfRunning -> {reply, State, State};
-%% 		execution_done -> {reply, State-1, State-1};
 		_ -> invalid_call
     end.
-
 
 %% handle_cast/2
 %% ====================================================================
@@ -118,10 +114,5 @@ terminate(_Reason, _State) ->
 %% ====================================================================
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
-
-%% ====================================================================
-%% Internal functions
-%% ====================================================================
 
 
