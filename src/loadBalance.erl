@@ -19,15 +19,20 @@
 %% ====================================================================
 %% API functions Implementations
 %% ====================================================================
+
+%% Start the 3 servers using their supervisor.
 startServers() -> 
 	servers_supervisor:start_link().
 
+%% Stop the 3 servers using their supervisor.
 stopServers() ->
 	supervisor:terminate_child(servers_supervisor, server1),
 	supervisor:terminate_child(servers_supervisor, server2),
 	supervisor:terminate_child(servers_supervisor, server3),
 	exit(whereis(servers_supervisor), normal).
 
+%% Get the number of running functions in server with specific ServerNumber
+%% @Params ServerNum: number of server. Options: 1, 2, 3
 numberOfRunningFunctions(ServerNumber) ->
 	ServerName = case ServerNumber of
 					 1 -> server1;
@@ -36,6 +41,8 @@ numberOfRunningFunctions(ServerNumber) ->
 				 end,
 	function_server:num_running_functions(ServerName).
 
+%% Send a new function to be executed in the server with lease load (# of running functions)
+%% @Params PID: requester Process id. F: function to be executed. MsgRef: a message reference
 calcFun(PID, F, MsgRef) ->
 	Server = min_load_server(),
 	function_server:calcFunction(Server, PID, F, MsgRef),
